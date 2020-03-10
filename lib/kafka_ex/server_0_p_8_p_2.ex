@@ -163,7 +163,7 @@ defmodule KafkaEx.Server0P8P2 do
               response -> OffsetFetch.parse_response(response)
             end
 
-          {response, %{state | correlation_id: state.correlation_id + 1}}
+          {response, increment_state_correlation_id(state)}
       end
 
     {:reply, response, state}
@@ -253,7 +253,7 @@ defmodule KafkaEx.Server0P8P2 do
         :timer.sleep(400)
 
         update_consumer_metadata(
-          %{state | correlation_id: state.correlation_id + 1},
+          increment_state_correlation_id(state),
           retry - 1,
           response.error_code
         )
@@ -318,7 +318,7 @@ defmodule KafkaEx.Server0P8P2 do
         response -> OffsetCommit.parse_response(response)
       end
 
-    {response, %{state | correlation_id: state.correlation_id + 1}}
+    {response, increment_state_correlation_id(state)}
   end
 
   defp broker_for_consumer_group(state) do

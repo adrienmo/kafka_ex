@@ -556,7 +556,7 @@ defmodule KafkaEx.Server do
                   response -> Offset.parse_response(response)
                 end
 
-              state = %{state | correlation_id: state.correlation_id + 1}
+              state = increment_state_correlation_id(state)
               {response, state}
           end
 
@@ -993,6 +993,10 @@ defmodule KafkaEx.Server do
 
       defp default_partitioner do
         Application.get_env(:kafka_ex, :partitioner, KafkaEx.DefaultPartitioner)
+      end
+
+      defp increment_state_correlation_id(%_{correlation_id: correlation_id} = state) do
+        %{state | correlation_id: correlation_id + 1}
       end
     end
   end
